@@ -115,7 +115,7 @@ const Search = () => {
         if (inputValue && error) {
             setError(false);
         }
-
+        // eslint-disable-next-line
     }, [value, inputValue, isButtonClicked])
 
     useDebounce(
