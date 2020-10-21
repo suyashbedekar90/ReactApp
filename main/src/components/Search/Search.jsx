@@ -11,12 +11,14 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { useDebounce } from 'react-use';
 import axios from 'axios';
+import Alert from '@material-ui/lab/Alert';
 
 const Search = () => {
     const [value, setValue] = useState('');
     const [inputValue, setInputValue] = useState('');
     const [options, setOptions] = useState([]);
     const [rows, setRows] = useState([]);
+    const [error, setError] = useState(false);
     //const [isOptionsLoading, setIsOptionsLoading] = useState(true);
 
     useEffect(() => {
@@ -38,7 +40,11 @@ const Search = () => {
                     ]);
                 })
         }
-    }, [value])
+
+        if (!inputValue) {
+            setError(false);
+        }
+    }, [value, inputValue])
 
     useDebounce(
         () => {
@@ -48,6 +54,9 @@ const Search = () => {
                     .then(res => {
                         const apiData = res.data;
                         setOptions(apiData?.bestMatches?.map(stockData => stockData['1. symbol'] + ' | ' +  stockData['2. name']));
+                        if (apiData?.bestMatches.length === 0) {
+                            setError(true);
+                        }
                 })
             }
         },
@@ -111,6 +120,7 @@ const Search = () => {
                     </TableBody>
                 </Table>
             </TableContainer>}
+            {error && <Alert severity="error">Sorry no stock match found for your search term.</Alert>}
         </div>
     );
 }
