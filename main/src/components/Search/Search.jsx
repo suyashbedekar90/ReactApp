@@ -62,17 +62,22 @@ const Search = () => {
             axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${targetSymbol}&apikey=3PG1EIX2R15JB4FB`)
                 .then(res => {
                     const apiData = res.data;
-                    setRows([
-                        {
-                            symbol: apiData['Global Quote']['01. symbol'],
-                            open: apiData['Global Quote']['02. open'],
-                            close: apiData['Global Quote']['08. previous close'],
-                            price: apiData['Global Quote']['05. price'],
-                            volume: apiData['Global Quote']['06. volume'],
-                            high: apiData['Global Quote']['03. high'],
-                            low: apiData['Global Quote']['04. low']
-                        }
-                    ]);
+                    if (apiData['Global Quote']?.['01. symbol'] !== undefined) {
+                        setRows([
+                            {
+                                symbol: apiData['Global Quote']['01. symbol'],
+                                open: apiData['Global Quote']['02. open'],
+                                close: apiData['Global Quote']['08. previous close'],
+                                price: apiData['Global Quote']['05. price'],
+                                volume: apiData['Global Quote']['06. volume'],
+                                high: apiData['Global Quote']['03. high'],
+                                low: apiData['Global Quote']['04. low']
+                            }
+                        ]);
+                    } else {
+                        setError(true);
+                        setIsButtonClicked(false);
+                    }
                 })
         }
 
@@ -107,6 +112,9 @@ const Search = () => {
         } else if (inputValue) {
             setIsOptionsLoading(true);
         }
+        if (inputValue && error) {
+            setError(false);
+        }
 
     }, [value, inputValue, isButtonClicked])
 
@@ -131,6 +139,8 @@ const Search = () => {
     const handleButtonClick = () => {
         if (inputValue && options.length) {
             setIsButtonClicked(true);
+        } else {
+            setError(true);
         }
     }
 
