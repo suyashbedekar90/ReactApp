@@ -13,6 +13,9 @@ import { useDebounce } from 'react-use';
 import axios from 'axios';
 import Alert from '@material-ui/lab/Alert';
 import styled from 'styled-components';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 
 const SearchWrapper = styled.div`
     display: flex;
@@ -37,7 +40,11 @@ const ErrorWrapper = styled.div`
 `
 
 const TableWrapper = styled.div`
-   min-width: 635px;
+   min-width: 690px;
+`
+
+const HeaderWrapper = styled.div`
+   min-width: 690px;
 `
 
 const Search = () => {
@@ -95,8 +102,15 @@ const Search = () => {
 
     return (
         <div>
-            <h3>{'Value is' + value}</h3>
-            <h3>{'InputValue: ' + inputValue}</h3>
+            <HeaderWrapper>
+                <AppBar position="static">
+                    <Toolbar>
+                        <Typography variant="h6">
+                            Stocks Explorer
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
+            </HeaderWrapper>
             <SearchWrapper>
                 <AutoCompleteWrapper>
                     <Autocomplete
@@ -142,12 +156,12 @@ const Search = () => {
                                     <TableCell component="th" scope="row">
                                         {row.symbol}
                                     </TableCell>
-                                    <TableCell align="right">{row.open}</TableCell>
-                                    <TableCell align="right">{row.close}</TableCell>
-                                    <TableCell align="right">{row.price}</TableCell>
+                                    <TableCell align="right">{'USD ' + row.open}</TableCell>
+                                    <TableCell align="right">{'USD ' + row.close}</TableCell>
+                                    <TableCell align="right">{'USD ' + row.price}</TableCell>
                                     <TableCell align="right">{row.volume}</TableCell>
-                                    <TableCell align="right">{row.high}</TableCell>
-                                    <TableCell align="right">{row.low}</TableCell>
+                                    <TableCell align="right">{'USD ' + row.high}</TableCell>
+                                    <TableCell align="right">{'USD ' + row.low}</TableCell>
                                 </TableRow>
                             ))}
 
