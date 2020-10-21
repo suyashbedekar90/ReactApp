@@ -54,6 +54,7 @@ const Search = () => {
     const [rows, setRows] = useState([]);
     const [error, setError] = useState(false);
     const [isOptionsLoading, setIsOptionsLoading] = useState(false);
+    const [isButtonClicked, setIsButtonClicked] = useState(false);
 
     useEffect(() => {
         if (value) {
@@ -75,12 +76,39 @@ const Search = () => {
                 })
         }
 
+        if (inputValue && isButtonClicked) {
+            const targetSearchSymbol = inputValue;
+            axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${targetSearchSymbol}&apikey=3PG1EIX2R15JB4FB`)
+                .then(res => {
+                    const apiData = res.data;
+                    if (apiData['Global Quote']?.['01. symbol'] !== undefined) {
+                        setRows([
+                            {
+                                symbol: apiData['Global Quote']['01. symbol'],
+                                open: apiData['Global Quote']['02. open'],
+                                close: apiData['Global Quote']['08. previous close'],
+                                price: apiData['Global Quote']['05. price'],
+                                volume: apiData['Global Quote']['06. volume'],
+                                high: apiData['Global Quote']['03. high'],
+                                low: apiData['Global Quote']['04. low']
+                            }
+                        ]);
+                    } else {
+                        setError(true);
+                        setIsButtonClicked(false);
+                    }
+                })
+        }
+
         if (!inputValue) {
             setError(false);
+            setIsButtonClicked(false);
+            setRows([]);
         } else if (inputValue) {
             setIsOptionsLoading(true);
         }
-    }, [value, inputValue])
+
+    }, [value, inputValue, isButtonClicked])
 
     useDebounce(
         () => {
@@ -99,6 +127,12 @@ const Search = () => {
         750,
         [inputValue]
     )
+
+    const handleButtonClick = () => {
+        if (inputValue && options.length) {
+            setIsButtonClicked(true);
+        }
+    }
 
     return (
         <div>
@@ -131,13 +165,14 @@ const Search = () => {
                     <Button
                         variant="contained"
                         color="primary"
+                        onClick={handleButtonClick}
                     >
                         Search
                     </Button>
                 </ButtonWrapper>
             </SearchWrapper>
             <TableWrapper>
-                {value && <TableContainer component={Paper}>
+                {(value || (inputValue && isButtonClicked)) && <TableContainer component={Paper}>
                     <Table aria-label="simple table">
                         <TableHead>
                             <TableRow>
