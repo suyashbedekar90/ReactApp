@@ -156,12 +156,12 @@ const Search = () => {
                                     <TableCell component="th" scope="row">
                                         {row.symbol}
                                     </TableCell>
-                                    <TableCell align="right">{'USD ' + row.open}</TableCell>
-                                    <TableCell align="right">{'USD ' + row.close}</TableCell>
-                                    <TableCell align="right">{'USD ' + row.price}</TableCell>
+                                    <TableCell align="right">{row.open + ' USD'}</TableCell>
+                                    <TableCell align="right">{row.close + ' USD'}</TableCell>
+                                    <TableCell align="right">{row.price + ' USD'}</TableCell>
                                     <TableCell align="right">{row.volume}</TableCell>
-                                    <TableCell align="right">{'USD ' + row.high}</TableCell>
-                                    <TableCell align="right">{'USD ' + row.low}</TableCell>
+                                    <TableCell align="right">{row.high + ' USD'}</TableCell>
+                                    <TableCell align="right">{row.low + ' USD'}</TableCell>
                                 </TableRow>
                             ))}
 
