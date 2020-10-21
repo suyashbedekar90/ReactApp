@@ -19,7 +19,7 @@ const Search = () => {
     const [options, setOptions] = useState([]);
     const [rows, setRows] = useState([]);
     const [error, setError] = useState(false);
-    //const [isOptionsLoading, setIsOptionsLoading] = useState(true);
+    const [isOptionsLoading, setIsOptionsLoading] = useState(false);
 
     useEffect(() => {
         if (value) {
@@ -43,13 +43,15 @@ const Search = () => {
 
         if (!inputValue) {
             setError(false);
+        } else if (inputValue) {
+            setIsOptionsLoading(true);
         }
     }, [value, inputValue])
 
     useDebounce(
         () => {
             if(inputValue && !value) {
-                //setIsOptionsLoading(false);
+                setIsOptionsLoading(false);
                 axios.get(`https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${inputValue}&apikey=3PG1EIX2R15JB4FB`)
                     .then(res => {
                         const apiData = res.data;
@@ -71,9 +73,7 @@ const Search = () => {
             <Autocomplete
                 id="stock_search_typeahead"
                 freeSolo
-                /*loading={inputValue ?
-                    isOptionsLoading ? true : setIsOptionsLoading(true) :
-                    false}*/
+                loading={isOptionsLoading}
                 options={options}
                 onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
                 onChange={(event, newValue) => {
