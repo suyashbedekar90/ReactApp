@@ -12,6 +12,33 @@ import Paper from '@material-ui/core/Paper';
 import { useDebounce } from 'react-use';
 import axios from 'axios';
 import Alert from '@material-ui/lab/Alert';
+import styled from 'styled-components';
+
+const SearchWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 700px;
+`
+
+const AutoCompleteWrapper = styled.div`
+   width: 500px;  
+`
+
+const ButtonWrapper = styled.div`
+   width: 100px;
+`
+
+const ErrorWrapper = styled.div`
+   width: 635px;
+   margin-left: 35px;
+`
+
+const TableWrapper = styled.div`
+   min-width: 635px;
+`
 
 const Search = () => {
     const [value, setValue] = useState('');
@@ -70,57 +97,67 @@ const Search = () => {
         <div>
             <h3>{'Value is' + value}</h3>
             <h3>{'InputValue: ' + inputValue}</h3>
-            <Autocomplete
-                id="stock_search_typeahead"
-                freeSolo
-                loading={isOptionsLoading}
-                options={options}
-                onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
-                onChange={(event, newValue) => {
-                    setValue(newValue);
-                }}
-                renderInput={(params) => (
-                    <TextField {...params} label="Search stocks" margin="normal" variant="outlined" />
-                )}
-            />
-            <Button
-                variant="contained"
-                color="primary"
-            >
-                    Search
-            </Button>
-            {value && <TableContainer component={Paper}>
-                <Table aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Stock Symbol</TableCell>
-                            <TableCell align="right">Open at</TableCell>
-                            <TableCell align="right">Close at</TableCell>
-                            <TableCell align="right">Price</TableCell>
-                            <TableCell align="right">Volume</TableCell>
-                            <TableCell align="right">High</TableCell>
-                            <TableCell align="right">Low</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.map((row) => (
-                            <TableRow key={row.name}>
-                                <TableCell component="th" scope="row">
-                                    {row.symbol}
-                                </TableCell>
-                                <TableCell align="right">{row.open}</TableCell>
-                                <TableCell align="right">{row.close}</TableCell>
-                                <TableCell align="right">{row.price}</TableCell>
-                                <TableCell align="right">{row.volume}</TableCell>
-                                <TableCell align="right">{row.high}</TableCell>
-                                <TableCell align="right">{row.low}</TableCell>
+            <SearchWrapper>
+                <AutoCompleteWrapper>
+                    <Autocomplete
+                        id="stock_search_typeahead"
+                        freeSolo
+                        loading={isOptionsLoading}
+                        options={options}
+                        onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
+                        onChange={(event, newValue) => {
+                            setValue(newValue);
+                        }}
+                        renderInput={(params) => (
+                            <TextField {...params} label="Search stocks" margin="normal" variant="outlined" />
+                        )}
+                    />
+                </AutoCompleteWrapper>
+                <ButtonWrapper>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                    >
+                        Search
+                    </Button>
+                </ButtonWrapper>
+            </SearchWrapper>
+            <TableWrapper>
+                {value && <TableContainer component={Paper}>
+                    <Table aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Stock Symbol</TableCell>
+                                <TableCell align="right">Open at</TableCell>
+                                <TableCell align="right">Close at</TableCell>
+                                <TableCell align="right">Price</TableCell>
+                                <TableCell align="right">Volume</TableCell>
+                                <TableCell align="right">High</TableCell>
+                                <TableCell align="right">Low</TableCell>
                             </TableRow>
-                        ))}
+                        </TableHead>
+                        <TableBody>
+                            {rows.map((row) => (
+                                <TableRow key={row.name}>
+                                    <TableCell component="th" scope="row">
+                                        {row.symbol}
+                                    </TableCell>
+                                    <TableCell align="right">{row.open}</TableCell>
+                                    <TableCell align="right">{row.close}</TableCell>
+                                    <TableCell align="right">{row.price}</TableCell>
+                                    <TableCell align="right">{row.volume}</TableCell>
+                                    <TableCell align="right">{row.high}</TableCell>
+                                    <TableCell align="right">{row.low}</TableCell>
+                                </TableRow>
+                            ))}
 
-                    </TableBody>
-                </Table>
-            </TableContainer>}
-            {error && <Alert severity="error">Sorry no stock match found for your search term.</Alert>}
+                        </TableBody>
+                    </Table>
+                </TableContainer>}
+            </TableWrapper>
+            <ErrorWrapper>
+                {error && <Alert severity="error">Sorry no stock match found for your search term.</Alert>}
+            </ErrorWrapper>
         </div>
     );
 }
