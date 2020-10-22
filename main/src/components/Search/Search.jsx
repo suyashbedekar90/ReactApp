@@ -1,51 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import { useDebounce } from 'react-use';
+import axios from 'axios';
+import Alert from '@material-ui/lab/Alert';
+import AppBar from '@material-ui/core/AppBar';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import { useDebounce } from 'react-use';
-import axios from 'axios';
-import Alert from '@material-ui/lab/Alert';
-import styled from 'styled-components';
-import AppBar from '@material-ui/core/AppBar';
+import TextField from '@material-ui/core/TextField';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-
-const SearchWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    align-items: center;
-    width: 700px;
-`
-
-const AutoCompleteWrapper = styled.div`
-   width: 500px;  
-`
-
-const ButtonWrapper = styled.div`
-   width: 100px;
-`
-
-const ErrorWrapper = styled.div`
-   width: 635px;
-   margin-left: 35px;
-`
-
-const TableWrapper = styled.div`
-   min-width: 690px;
-`
-
-const HeaderWrapper = styled.div`
-   min-width: 690px;
-`
+import { AutoCompleteWrapper, ButtonWrapper, ErrorWrapper, HeaderWrapper, SearchWrapper, TableWrapper } from '../../styles/SearchStyles';
 
 const Search = () => {
     const [value, setValue] = useState('');
@@ -124,21 +94,20 @@ const Search = () => {
                 setIsOptionsLoading(false);
                 axios.get(`https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${inputValue}&apikey=3PG1EIX2R15JB4FB`)
                     .then(res => {
-                        const apiData = res.data;
+                        const apiData = res?.data;
                         setOptions(apiData?.bestMatches?.map(stockData => stockData['1. symbol'] + ' | ' +  stockData['2. name']));
-                        if (apiData?.bestMatches.length === 0) {
-                            setError(true);
-                        }
                 })
             }
         },
         750,
-        [inputValue]
+        [inputValue, value]
     )
 
     const handleButtonClick = () => {
         if (inputValue && options.length) {
             setIsButtonClicked(true);
+        } else if (inputValue && !options.length) {
+            setError(true);
         } else {
             setError(true);
         }
@@ -182,7 +151,7 @@ const Search = () => {
                 </ButtonWrapper>
             </SearchWrapper>
             <TableWrapper>
-                {(value || (inputValue && isButtonClicked)) && <TableContainer component={Paper}>
+                {((inputValue && isButtonClicked) || value) && <TableContainer component={Paper}>
                     <Table aria-label="simple table">
                         <TableHead>
                             <TableRow>
@@ -209,7 +178,6 @@ const Search = () => {
                                     <TableCell align="right">{row.low + ' USD'}</TableCell>
                                 </TableRow>
                             ))}
-
                         </TableBody>
                     </Table>
                 </TableContainer>}
